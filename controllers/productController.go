@@ -110,3 +110,20 @@ func DeleteProduct(c *gin.Context) {
 
 	c.Status(http.StatusNoContent)
 }
+
+// Іздеу (поиск)
+func SearchProducts(c *gin.Context) {
+	query := c.Query("q")
+	if query == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Search query missing"})
+		return
+	}
+
+	var products []models.Product
+	if err := config.DB.Where("name ILIKE ?", "%"+query+"%").Find(&products).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error searching products"})
+		return
+	}
+
+	c.JSON(http.StatusOK, products)
+}

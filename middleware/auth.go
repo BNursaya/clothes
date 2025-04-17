@@ -23,6 +23,10 @@ func TokenAuthMiddleware() gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
 			return
 		}
+
+		// ✅ Міне, осы жолды қосамыз
+		c.Set("user", token)
+
 		c.Next()
 	}
 }

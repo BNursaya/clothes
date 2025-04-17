@@ -15,11 +15,14 @@ func SetupRoutes() *gin.Engine {
 	auth := router.Group("/api")
 	auth.Use(middleware.TokenAuthMiddleware())
 	{
+		auth.GET("/me", controllers.GetProfile)
+
 		auth.GET("/products", controllers.GetProducts)
 		auth.GET("/products/:id", controllers.GetProductByID)
 		auth.POST("/products", controllers.CreateProduct)
 		auth.PUT("/products/:id", controllers.UpdateProduct)
 		auth.DELETE("/products/:id", controllers.DeleteProduct)
+		auth.GET("/products/search", controllers.SearchProducts)
 
 		auth.GET("/categories", controllers.GetCategories)
 		auth.POST("/categories", controllers.CreateCategory)
