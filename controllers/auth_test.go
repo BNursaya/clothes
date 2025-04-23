@@ -38,16 +38,24 @@ func setupTestRouter() *gin.Engine {
 
 func initTestDB() {
 	config.InitDB()
+
+	// 🔄 Мәліметтерді өшіру
 	config.DB.Exec("DELETE FROM orders")
 	config.DB.Exec("DELETE FROM products")
 	config.DB.Exec("DELETE FROM categories")
 	config.DB.Exec("DELETE FROM users")
 
-	// Категория қосу
+	// ✅ SEQUENCE-терді reset жасау
+	config.DB.Exec("ALTER SEQUENCE users_id_seq RESTART WITH 1")
+	config.DB.Exec("ALTER SEQUENCE categories_id_seq RESTART WITH 1")
+	config.DB.Exec("ALTER SEQUENCE products_id_seq RESTART WITH 1")
+	config.DB.Exec("ALTER SEQUENCE orders_id_seq RESTART WITH 1")
+
+	// Тест категориясын қосу
 	config.DB.Raw(`INSERT INTO categories (name, description, created_at, updated_at)
 		VALUES (?, ?, now(), now()) RETURNING id`, "Test Category", "For testing").Scan(&testCategoryID)
 
-	// Юзер қосу
+	// Тест қолданушысын қосу
 	hashedPassword := "$2a$10$exQk6/eEoZMbd1qxnAJOo.PKT4DC5f4Y9xRk.hnFgQ79RGsTwOW8C"
 	config.DB.Raw(`INSERT INTO users (name, email, password, role, created_at, updated_at)
 		VALUES (?, ?, ?, ?, now(), now()) RETURNING id`,

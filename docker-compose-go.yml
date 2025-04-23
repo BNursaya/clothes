@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  go_postgres:
+    image: postgres:15
+    container_name: go_postgres_db
+    environment:
+      POSTGRES_USER: go_user
+      POSTGRES_PASSWORD: go_password
+      POSTGRES_DB: clothes
+    ports:
+      - "5432"  # 🔥 БАСҚА порт!
+    volumes:
+      - go_postgres_data:/var/lib/postgresql/data
+    networks:
+      - go_network
+
+volumes:
+  go_postgres_data:
+
+networks:
+  go_network:
